@@ -32,6 +32,18 @@ public class GameMain
     void Start()
     {
         GameObject gameEntry = GameObject.Find("GameEntry");
+        
+        RegistSystemCallbacks();
+        // GameInit.Instance.AddManager(LuaManager.Instance);
+        GameInit.Instance.Initialize(gameEntry);
+
         BInited = true;
+    }
+
+    void RegistSystemCallbacks()
+    {
+
+
+
     }
 }
