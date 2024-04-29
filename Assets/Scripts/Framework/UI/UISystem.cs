@@ -53,7 +53,18 @@ namespace UI
 
         }
 
-        
+        public void ViewUpdate(float dt)
+        {
+            foreach (var g in m_groups)
+            {
+                foreach (var s in g.Value.Stacks)
+                {
+                    s.Value.OnUpdate(dt);
+                }
+            }
+
+            UILocker.Instance.Update();
+        }
 
     }
 }

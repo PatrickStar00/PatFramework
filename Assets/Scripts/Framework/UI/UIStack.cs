@@ -63,6 +63,235 @@ namespace UI
             return null;
         }
 
+        public UIBase GetTopUI()
+        {
+            if (m_uiStack.Count <= 0) return null;
+            var ui = m_uis[m_uiStack.Peek()];
+            return ui;
+        }
 
+        public Dictionary<int, UIBase> UIs { get { return m_uis; } }
+        public int GetUILayer()
+        {
+            return this.Group.Layer;
+        }
+
+        public void TryLoadUI(int uiid, Action<UIBase> success, Action Failed)
+        {
+
+        }
+
+        public void Push(int uiid)
+        {
+
+        }
+
+        private void OnPushLoadFailed()
+        {
+            //failed
+            //m_locker = 0;
+        }
+
+        private void OnPushLoadSuccess(UIBase ui)
+        {
+    
+
+        }
+
+        private void AdjustVisibleOfBelowUI()
+        {
+           
+        }
+
+        public void Replace(int uiid)
+        {
+            m_replaceFlag = ReplaceFlag.None;
+            _Replace(uiid);
+        }
+
+        public void _Replace(int uiid)
+        {
+            _Pop(false, true, true);
+            Push(uiid);
+        }
+
+        private void OnReplaceLoadFailed()
+        {
+
+        }
+
+        private enum ReplaceFlag
+        {
+            None,
+            PopAll,
+            DestroyAll,
+        }
+
+        private ReplaceFlag m_replaceFlag;
+
+        public void PopAllAndReplace(int uiid)
+        {
+            bool bNeedAnim = true;
+            while (m_uiStack.Count > 0)
+            {
+                var topUI = GetTopUI();
+                _Pop(false, bNeedAnim);
+                //bNeedAnim = topUI.IsFullScreen();
+            }
+
+            Push(uiid);
+        }
+
+        public void DestroyAllAndReplace(int uiid)
+        {
+            DestroyAll();
+            Push(uiid);
+        }
+
+        public void Pop()
+        {
+            _Pop(false);
+
+        }
+
+        public void _Pop(bool destroy, bool anim = true, bool lockPrevAnim = false)
+        {
+            
+        }
+
+        public void PopAll()
+        {
+            bool bNeedAnim = true;
+            while (m_uiStack.Count > 0)
+            {
+                var topUI = GetTopUI();
+                _Pop(false, bNeedAnim);
+            }
+        }
+
+        List<int> _deleteds = new List<int>();
+        public void DestroyAll()
+        {
+            while (m_uiStack.Count > 0)
+            {
+                DestroyUI(m_uiStack.Peek());
+            }
+        }
+
+        private void OnAnimClosed(object obj)
+        {
+            UIBase ui = obj as UIBase;
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uiid"></param>
+        /// <param name="parent"></param>
+        public void Dock(int uiid, Transform parent, UIBase dockerUi)
+        {
+            var ui = GetUIInstance(uiid);
+
+        }
+
+
+
+        private void OnDockLoaded(UIBase obj)
+        {
+            var uiid = obj.GetID();
+            if (InUsing(uiid))
+            {
+                return;
+            }
+            var ui = GetUIInstance(uiid);
+            if (ui != null)
+            {
+                ui.SetActive(true);
+            }
+        }
+
+        public void HideUI(int uiid)
+        {
+            UIBase ui = null;
+            m_uis.TryGetValue(uiid, out ui);
+            if (ui != null)
+            {
+                ui.SetActive(false);
+            }
+        }
+        public void ShowUI(int uiid)
+        {
+            UIBase ui = null;
+            m_uis.TryGetValue(uiid, out ui);
+            if (ui != null)
+            {
+                ui.SetActive(true);
+            }
+        }
+        public void RemoveUIFromStack(int uiid)
+        {
+            if (InUsing(uiid))
+            {
+
+            }
+        }
+
+
+        public void DestroyUI(int uiid, bool useAnim = true)
+        {
+         
+        }
+        Dictionary<int, UIBase> m_needDestoyUis = new Dictionary<int, UIBase>();
+
+        private void MarkDestroyUI(UIBase ui)
+        {
+            //Debug.LogFormat("================================= cs mark : {0}", ui.GetFramePrefabName());
+            m_needDestoyUis[ui.GetID()] = ui;
+        }
+
+        public void OnUpdate(float dt)
+        {
+
+        }
+
+        public void OnFixedUpdate(float dt)
+        {
+
+        }
+
+        public void ResortOrder()
+        {
+
+        }
+
+        public int GetTopSortOrder()
+        {
+            return 0;
+        }
+
+        public UIBase GetUIById(int uiid)
+        {
+            UIBase res;
+            if (m_uis.TryGetValue(uiid, out res))
+            {
+                return res;
+            }
+            return null;
+        }
+
+        public object ContainsUIObjectLua(int uiid)
+        {
+            if (m_uis.ContainsKey(uiid) && m_uis[uiid].IsActive)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        internal bool InUsing(int id)
+        {
+            return m_uiStack.Exists(id);
+        }
     }
 }

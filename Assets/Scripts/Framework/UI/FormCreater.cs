@@ -5,8 +5,16 @@ using System.Text;
 
 namespace UI
 {
-    public interface IFormCreater
+    public class FormCreater : Singleton<FormCreater>, UI.IFormCreater
     {
-        UI.UIBase CreateForm(int formId);
+        public UIBase CreateForm(int formId)
+        {
+            switch (formId)
+            {
+                case UIDefines.ID_WINDOWS_TEST:
+                    return new Window_MainMenu();
+            }
+            return new UIBase();
+        }
     }
 }
