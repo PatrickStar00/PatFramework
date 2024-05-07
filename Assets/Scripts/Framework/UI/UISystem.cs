@@ -50,6 +50,8 @@ namespace UI
 
         public void Init()
         {
+            //
+            FormCreater = UI.FormCreater.Instance;
 
         }
 

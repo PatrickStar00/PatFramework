@@ -83,7 +83,30 @@ namespace UI
 
         public void Push(int uiid)
         {
+            if (m_uiStack.Count > 0 && m_uiStack.Peek() == uiid)
+            {
+                Debug.LogWarning("Push uiid 与当前UI 相同，忽略本次操作");
+                return;
+            }
 
+            if (InUsing(uiid))
+            {
+                //在堆栈中
+                m_uiStack.PullOut(uiid);
+                ResortOrder();
+            }
+
+            UIBase topUI = GetTopUI();
+            UIBase ui = GetUIInstance(uiid);
+            ui.PrevUI = topUI;
+
+            ui.SortingOrder = GetTopSortOrder();
+            m_uiStack.Push(uiid);
+            ui.SetActive(true);
+#if UNITY_EDITOR
+            m_uiStack.PrintStack();
+#endif        
+            TryLoadUI(uiid, OnPushLoadSuccess, OnPushLoadFailed);
         }
 
         private void OnPushLoadFailed()
@@ -94,13 +117,13 @@ namespace UI
 
         private void OnPushLoadSuccess(UIBase ui)
         {
-    
+
 
         }
 
         private void AdjustVisibleOfBelowUI()
         {
-           
+
         }
 
         public void Replace(int uiid)
@@ -156,7 +179,7 @@ namespace UI
 
         public void _Pop(bool destroy, bool anim = true, bool lockPrevAnim = false)
         {
-            
+
         }
 
         public void PopAll()
@@ -240,7 +263,7 @@ namespace UI
 
         public void DestroyUI(int uiid, bool useAnim = true)
         {
-         
+
         }
         Dictionary<int, UIBase> m_needDestoyUis = new Dictionary<int, UIBase>();
 

@@ -48,6 +48,26 @@ namespace UI
                 }
             }
         }
+        public Canvas RootCanvas { get; private set; }
+        
+        public UIBase PrevUI { get; internal set; }
+
+        private int m_sortingOrder;
+        public int SortingOrder
+        {
+            get { return m_sortingOrder; }
+            set
+            {
+                if (m_sortingOrder != value)
+                {
+                    m_sortingOrder = value;
+                    if (m_uiGameObject != null && RootCanvas != null)
+                    {
+                        RootCanvas.sortingOrder = value;
+                    }
+                }
+            }
+        }
 
         private void DoActive(bool isDockableRefresh = false)
         {

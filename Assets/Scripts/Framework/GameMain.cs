@@ -32,10 +32,14 @@ public class GameMain
     void Start()
     {
         GameObject gameEntry = GameObject.Find("GameEntry");
-        
         RegistSystemCallbacks();
         // GameInit.Instance.AddManager(LuaManager.Instance);
+        //!原版在这里初始化Lua并加载UI
+
+        //这里考虑还需不需要GameInit
         GameInit.Instance.Initialize(gameEntry);
+        // UI.UISystem.Instance.FormCreater = UI.FormCreater.Instance;
+
 
         BInited = true;
     }
@@ -43,7 +47,13 @@ public class GameMain
     void RegistSystemCallbacks()
     {
 
+        //         ApplicationImpl.Instance.InitTempApplicationCallbacks();
 
+        // #if !MUF_NO_NETWORK
+        //         ILog.ReceiveMsgLogAction = GameReceiveMessage.ReceiveMsgLog;
+        //         ILog.SendMsgLogAction = GameReceiveMessage.SendMsgLog;
+        //         ILog.m_gErrorDelegate = LogUtility.OnErrorLog;
+        // #endif
 
     }
 }
