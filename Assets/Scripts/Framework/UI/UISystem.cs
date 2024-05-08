@@ -51,6 +51,7 @@ namespace UI
         public void Init()
         {
             //
+            UIStatic.InitUI();
             FormCreater = UI.FormCreater.Instance;
 
         }

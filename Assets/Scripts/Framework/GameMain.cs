@@ -41,7 +41,7 @@ public class GameMain
         GameInit.Instance.Initialize(gameEntry);
         // UI.UISystem.Instance.FormCreater = UI.FormCreater.Instance;
         BInited = true;
-
+        UIStatic.InitUI();
         UIStatic.StackMain.Push(UIDefines.ID_WINDOWS_TEST);
     }
 

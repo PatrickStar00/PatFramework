@@ -5,6 +5,7 @@ using System;
 
 using UnityEngine.UI;
 using System.Reflection;
+using UnityEngine.AddressableAssets;
 
 namespace UI
 {
@@ -85,24 +86,24 @@ namespace UI
             else
             {
                 int iLockerId = UILocker.Instance.Lock(3.0f);
-
-                ResourceManager.LoadAssetAsync(string.Intern(GetFramePrefabName()), ResourceType.UI, (result) =>
-                {
-                    UILocker.Instance.Unlock(iLockerId);
-                    if (Destroyed) return;
-                    if (result.Status == ELoadingStatus.Successed)
-                    {
-                        //OnLoadedSuccess(result.Result as GameObject);
-                        OnLoadInit(result.Result as GameObject);
-                        if (success != null) success(this);
-                    }
-                    else
-                    {
-                        Debug.LogError("UIBase.OnLoadedSuccess , ui 资源错误:" + Address);
-                        if (failed != null) failed();
-                        return;
-                    }
-                });
+                Addressables.InstantiateAsync(string.Intern(GetFramePrefabName()));
+                // ResourceManager.LoadAssetAsync(string.Intern(GetFramePrefabName()), ResourceType.UI, (result) =>
+                // {
+                //     UILocker.Instance.Unlock(iLockerId);
+                //     if (Destroyed) return;
+                //     if (result.Status == ELoadingStatus.Successed)
+                //     {
+                //         //OnLoadedSuccess(result.Result as GameObject);
+                //         OnLoadInit(result.Result as GameObject);
+                //         if (success != null) success(this);
+                //     }
+                //     else
+                //     {
+                //         Debug.LogError("UIBase.OnLoadedSuccess , ui 资源错误:" + Address);
+                //         if (failed != null) failed();
+                //         return;
+                //     }
+                // });
 
             }
         }
