@@ -69,6 +69,44 @@ namespace UI
             }
         }
 
+        // 设置使用的ui prefab资源
+        public virtual string GetFramePrefabName()
+        {
+            return string.Empty;
+        }
+
+        public void TryLoadFrame(Action<UIBase> success, Action failed)
+        {
+            if (m_uiGameObject != null)
+            {
+                //已加载
+                if (success != null) success(this);
+            }
+            else
+            {
+                int iLockerId = UILocker.Instance.Lock(3.0f);
+
+                ResourceManager.LoadAssetAsync(string.Intern(GetFramePrefabName()), ResourceType.UI, (result) =>
+                {
+                    UILocker.Instance.Unlock(iLockerId);
+                    if (Destroyed) return;
+                    if (result.Status == ELoadingStatus.Successed)
+                    {
+                        //OnLoadedSuccess(result.Result as GameObject);
+                        OnLoadInit(result.Result as GameObject);
+                        if (success != null) success(this);
+                    }
+                    else
+                    {
+                        Debug.LogError("UIBase.OnLoadedSuccess , ui 资源错误:" + Address);
+                        if (failed != null) failed();
+                        return;
+                    }
+                });
+
+            }
+        }
+
         private void DoActive(bool isDockableRefresh = false)
         {
         }

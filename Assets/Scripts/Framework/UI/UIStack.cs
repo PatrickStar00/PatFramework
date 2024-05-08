@@ -78,7 +78,8 @@ namespace UI
 
         public void TryLoadUI(int uiid, Action<UIBase> success, Action Failed)
         {
-
+            var ui = GetUIInstance(uiid);
+            ui.TryLoadFrame(success, Failed);
         }
 
         public void Push(int uiid)

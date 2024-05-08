@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UI;
 using UnityEngine;
 
 /// <summary>
@@ -39,9 +40,9 @@ public class GameMain
         //这里考虑还需不需要GameInit
         GameInit.Instance.Initialize(gameEntry);
         // UI.UISystem.Instance.FormCreater = UI.FormCreater.Instance;
-
-
         BInited = true;
+
+        UIStatic.StackMain.Push(UIDefines.ID_WINDOWS_TEST);
     }
 
     void RegistSystemCallbacks()
