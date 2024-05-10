@@ -163,10 +163,8 @@ namespace UI
             canvasScaler.matchWidthOrHeight = aspecRatio < 1.7 ? 0 : 1;
 
             m_uiGameObject = go;
-            m_uiGameObject.name = go.name;
-
             // m_uiGameObject = UnityEngine.Object.Instantiate(go);
-            // m_uiGameObject.name = go.name;
+             m_uiGameObject.name = go.name;
             // AnimatorTranser = m_uiGameObject.GetComponent<AnimatorTransition>();
 
             var uiLayer = OwnerStack.GetUILayer();
