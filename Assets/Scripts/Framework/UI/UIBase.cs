@@ -88,9 +88,9 @@ namespace UI
             else
             {
                 int iLockerId = UILocker.Instance.Lock(3.0f);
-                
-                AsyncOperationHandle<GameObject> textureHandle = Addressables.InstantiateAsync(string.Intern(GetFramePrefabName()));;
-                textureHandle.Completed += (AsyncOperationHandle<GameObject> handle) =>
+
+                AsyncOperationHandle<GameObject> gameobjectHandle = Addressables.InstantiateAsync(string.Intern(GetFramePrefabName())); ;
+                gameobjectHandle.Completed += (AsyncOperationHandle<GameObject> handle) =>
                 {
                     UILocker.Instance.Unlock(iLockerId);
                     if (Destroyed) return;
@@ -105,27 +105,6 @@ namespace UI
                         return;
                     }
                 };
-
-                // OnLoadInit(result.Result as GameObject);
-
-                // ResourceManager.LoadAssetAsync(string.Intern(GetFramePrefabName()), ResourceType.UI, (result) =>
-                // {
-                //     UILocker.Instance.Unlock(iLockerId);
-                //     if (Destroyed) return;
-                //     if (result.Status == ELoadingStatus.Successed)
-                //     {
-                //         //OnLoadedSuccess(result.Result as GameObject);
-                //         OnLoadInit(result.Result as GameObject);
-                //         if (success != null) success(this);
-                //     }
-                //     else
-                //     {
-                //         Debug.LogError("UIBase.OnLoadedSuccess , ui 资源错误:" + Address);
-                //         if (failed != null) failed();
-                //         return;
-                //     }
-                // });
-
             }
         }
 
@@ -164,7 +143,7 @@ namespace UI
 
             m_uiGameObject = go;
             // m_uiGameObject = UnityEngine.Object.Instantiate(go);
-             m_uiGameObject.name = go.name;
+            m_uiGameObject.name = go.name;
             // AnimatorTranser = m_uiGameObject.GetComponent<AnimatorTransition>();
 
             var uiLayer = OwnerStack.GetUILayer();
@@ -224,6 +203,73 @@ namespace UI
             //     Debug.LogFormat("set active false {0}", GetFramePrefabName());
             //     DoInactive();
             // }
+        }
+
+        List<AutoLayerOrder> m_autoLayers;
+        public void RefreshSortingOrder()
+        {
+            if (m_uiGameObject == null) return;
+            var baseOrder = RootCanvas.sortingOrder;
+            if (m_autoLayers == null)
+            {
+                var alos = m_uiGameObject.transform.GetComponentsInChildren<AutoLayerOrder>();
+                m_autoLayers = new List<AutoLayerOrder>(alos);
+            }
+            foreach (var alo in m_autoLayers)
+            {
+                RefreshSortingOrderOfGameObject(alo, baseOrder);
+                //Component.Destroy(alo);
+            }
+        }
+
+        private void RefreshSortingOrderOfGameObject(AutoLayerOrder alo, int baseOrder)
+        {
+            var canvas = alo.GetComponent<Canvas>();
+            if (canvas != null)
+            {
+                canvas.pixelPerfect = true;
+                canvas.overrideSorting = true;
+                canvas.sortingOrder = baseOrder + alo.OrderIndex;
+            }
+
+            var pars = alo.GetComponentsInChildren<ParticleSystem>(true);
+            int minOrder = int.MaxValue;
+            foreach (var p in pars)
+            {
+                Renderer render = p.GetComponent<Renderer>();
+                if (null != render)
+                {
+                    minOrder = Math.Min(minOrder, render.sortingOrder);
+                }
+
+            }
+            foreach (var p in pars)
+            {
+                Renderer render = p.GetComponent<Renderer>();
+                if (null != render)
+                {
+                    render.sortingOrder = render.sortingOrder - minOrder + baseOrder + alo.OrderIndex;
+                }
+            }
+
+            var mesh = alo.GetComponentsInChildren<MeshRenderer>(true);
+            minOrder = int.MaxValue;
+            foreach (var p in mesh)
+            {
+                Renderer render = p.GetComponent<Renderer>();
+                if (null != render)
+                {
+                    minOrder = Math.Min(minOrder, render.sortingOrder);
+                }
+            }
+            foreach (var p in mesh)
+            {
+                Renderer render = p.GetComponent<Renderer>();
+                if (null != render)
+                {
+                    render.sortingOrder = render.sortingOrder - minOrder + baseOrder + alo.OrderIndex;
+                }
+            }
         }
 
     }
