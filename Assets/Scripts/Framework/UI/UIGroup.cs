@@ -88,7 +88,7 @@ namespace UI
                     eventSystem.AddComponent<StandaloneInputModule>();
                 if (eventSystem.GetComponent<BaseInput>() == false)
                     eventSystem.AddComponent<BaseInput>();
-                EventSystem.current = eventSystem.AddComponent<EventSystem>();
+                EventSystem.current = eventSystem.GetComponent<EventSystem>();
             }
             
             return group;
